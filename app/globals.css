@@ -128,3 +128,41 @@
     @apply font-sans;
   }
 }
+
+--background: #FFF8EF;
+--foreground: #2B1B14;
+--card: #FFFFFF;
+--card-foreground: #2B1B14;
+--popover: #FFFFFF;
+--popover-foreground: #2B1B14;
+--primary: #D62E1F;
+--primary-foreground: #FFFFFF;
+--secondary: #F6E7D2;
+--secondary-foreground: #2B1B14;
+--muted: #F6E7D2;
+--muted-foreground: #7A6558;
+--accent: #F28C28;
+--accent-foreground: #2B1B14;
+--destructive: #9B1C1C;
+--border: #EADBC8;
+--input: #EADBC8;
+--ring: #D62E1F;
+
+--background: #1A110D;
+--foreground: #F7EBDD;
+--card: #251915;
+--card-foreground: #F7EBDD;
+--popover: #251915;
+--popover-foreground: #F7EBDD;
+--primary: #F0503F;
+--primary-foreground: #1A110D;
+--secondary: #33231C;
+--secondary-foreground: #F7EBDD;
+--muted: #33231C;
+--muted-foreground: #BFA999;
+--accent: #F5A04D;
+--accent-foreground: #1A110D;
+--destructive: #EF6B6B;
+--border: #3A2A22;
+--input: #3A2A22;
+--ring: #F0503F;
