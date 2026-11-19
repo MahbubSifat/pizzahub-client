@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Info, MapPin, ShoppingBag, Store } from "lucide-react";
+import { ArrowLeft, Info, MapPin, Store } from "lucide-react";
 import { apiFetch, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { formatPrice, vendorLabel, type PublicMenuItem } from "@/lib/menu-types";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import PremiumBadge from "@/components/menu/premium-badge";
+import OrderForm from "@/components/menu/order-form";
 
 type Props = { id: string; role: string; userId: string };
 type Result = { id: string; item?: PublicMenuItem; error?: string; status?: number };
@@ -190,14 +191,7 @@ export default function ItemDetails({ id, role, userId }: Props) {
                 <Info className="mt-0.5 size-4 shrink-0" /> {orderNote}
               </p>
             ) : (
-              <>
-                <Button size="lg" disabled className="h-12 w-full rounded-xl text-base">
-                  <ShoppingBag className="size-5" /> Order Now
-                </Button>
-                <p className="text-center text-xs text-muted-foreground">
-                  The order form is added in the next build step.
-                </p>
-              </>
+              <OrderForm item={item} />
             )}
           </div>
         </div>
