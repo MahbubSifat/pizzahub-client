@@ -1,73 +1,27 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/session";
+import AuthShell from "@/components/auth/auth-shell";
+import SignInForm from "@/components/auth/sign-in-form";
 
-export default function SignInPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const email = String(form.get("email") ?? "").trim();
-    const password = String(form.get("password") ?? "");
-
-    setLoading(true);
-    const { error } = await authClient.signIn.email({ email, password });
-    setLoading(false);
-
-    if (error) {
-      toast.error(error.message ?? "Sign in failed");
-      return;
-    }
-    toast.success("Signed in successfully");
-    router.push("/dashboard");
-    router.refresh();
-  }
+export default async function SignInPage() {
+  const session = await getSession();
+  if (session) redirect("/dashboard");
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your PizzaHub account.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            New here?{" "}
-            <Link href="/sign-up" className="font-medium text-primary hover:underline">
-              Create an account
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </main>
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to order, manage your menu or run the platform."
+      footer={
+        <>
+          New to PizzaHub?{" "}
+          <Link href="/sign-up" className="font-medium text-primary hover:underline">
+            Create an account
+          </Link>
+        </>
+      }
+    >
+      <SignInForm />
+    </AuthShell>
   );
 }
