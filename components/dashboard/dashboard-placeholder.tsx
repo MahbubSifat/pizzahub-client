@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { apiFetch } from "@/lib/api";
-import SignOutButton from "@/components/sign-out-button";
 
 type Check = { label: string; ok: boolean; text: string };
 
@@ -19,9 +18,8 @@ export default function DashboardPlaceholder({
   useEffect(() => {
     async function run() {
       const results: Check[] = [];
-
       try {
-        const data = await apiFetch<{ user: { role: string; email: string } }>("/api/me");
+        const data = await apiFetch<{ user: { role: string } }>("/api/me");
         results.push({
           label: "GET /api/me",
           ok: true,
@@ -34,14 +32,9 @@ export default function DashboardPlaceholder({
           text: error instanceof Error ? error.message : "Failed",
         });
       }
-
       try {
         await apiFetch("/api/admin/ping");
-        results.push({
-          label: "GET /api/admin/ping",
-          ok: true,
-          text: "Allowed (you are an admin)",
-        });
+        results.push({ label: "GET /api/admin/ping", ok: true, text: "Allowed (admin)" });
       } catch (error) {
         results.push({
           label: "GET /api/admin/ping",
@@ -49,19 +42,18 @@ export default function DashboardPlaceholder({
           text: error instanceof Error ? error.message : "Failed",
         });
       }
-
       setChecks(results);
     }
     run();
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-8 px-5 py-12">
+    <div className="max-w-2xl space-y-8">
       <div className="space-y-2">
         <p className="text-sm font-medium text-primary">Dashboard preview</p>
         <h1 className="font-heading text-4xl font-semibold">{title}</h1>
         <p className="text-muted-foreground">
-          Welcome, {name}. The full dashboard is built in a later phase.
+          Welcome, {name}. The full overview is built in a later phase.
         </p>
       </div>
 
@@ -81,15 +73,7 @@ export default function DashboardPlaceholder({
             </div>
           </div>
         ))}
-        <p className="text-xs text-muted-foreground">
-          For customers and vendors, <span className="font-mono">/api/admin/ping</span>{" "}
-          must show an error (403). That means role protection works.
-        </p>
       </div>
-
-      <div>
-        <SignOutButton />
-      </div>
-    </main>
+    </div>
   );
 }
