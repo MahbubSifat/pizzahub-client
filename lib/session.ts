@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 
 export type Role = "customer" | "vendor" | "admin";
 
-type AppUser = { role?: string; isBlocked?: boolean };
+type AppUser = { role?: string; isBlocked?: boolean; roleSelected?: boolean };
 
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
@@ -17,6 +17,7 @@ export async function requireRole(role: Role) {
 
   const user = session.user as unknown as AppUser;
   if (user.isBlocked) redirect("/blocked");
+  if (user.roleSelected === false) redirect("/onboarding");
   if (user.role !== role) redirect("/dashboard");
   return session;
 }

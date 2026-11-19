@@ -6,8 +6,13 @@ export default async function DashboardRedirectPage() {
   const session = await getSession();
   if (!session) redirect("/sign-in");
 
-  const user = session.user as unknown as { role?: string; isBlocked?: boolean };
+  const user = session.user as unknown as {
+    role?: string;
+    isBlocked?: boolean;
+    roleSelected?: boolean;
+  };
   if (user.isBlocked) redirect("/blocked");
+  if (user.roleSelected === false) redirect("/onboarding");
 
   if (user.role === "vendor" || user.role === "customer" || user.role === "admin") {
     redirect(`/dashboard/${user.role}`);

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import AuthShell from "@/components/auth/auth-shell";
 import SignInForm from "@/components/auth/sign-in-form";
+import SocialSection from "@/components/auth/social-section";
 
 export default async function SignInPage() {
   const session = await getSession();
@@ -22,6 +23,7 @@ export default async function SignInPage() {
       }
     >
       <SignInForm />
+      <SocialSection />
     </AuthShell>
   );
 }
