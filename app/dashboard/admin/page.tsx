@@ -1,10 +1,7 @@
-import SignOutButton from "@/components/sign-out-button";
+import { getSession } from "@/lib/session";
+import DashboardPlaceholder from "@/components/dashboard/dashboard-placeholder";
 
-export default function AdminDashboardPage() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-      <SignOutButton />
-    </main>
-  );
+export default async function AdminDashboardPage() {
+  const session = await getSession();
+  return <DashboardPlaceholder title="Admin Dashboard" name={session?.user.name ?? ""} />;
 }
