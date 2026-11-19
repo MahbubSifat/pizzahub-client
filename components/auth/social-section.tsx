@@ -17,14 +17,14 @@ function GoogleIcon() {
   );
 }
 
-export default function SocialSection() {
+export default function SocialSection({ callbackURL = "/dashboard" }: { callbackURL?: string }) {
   const [loading, setLoading] = useState(false);
 
   async function handleGoogle() {
     setLoading(true);
     const { error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL,
     });
     // সফল হলে browser Google-এর পাতায় চলে যায়, তাই এখানে শুধু error হলে আসা হয়
     if (error) {

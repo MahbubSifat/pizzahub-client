@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PasswordInput from "@/components/auth/password-input";
 
-export default function SignInForm() {
+export default function SignInForm({ redirectTo = "/dashboard" }: { redirectTo?: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +34,7 @@ export default function SignInForm() {
       return;
     }
     toast.success("Signed in successfully");
-    router.push("/dashboard");
+    router.push(redirectTo);
     router.refresh();
   }
 
