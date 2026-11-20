@@ -1,22 +1,20 @@
-import Link from "next/link";
-import { Pizza } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { getSession } from "@/lib/session";
+import Hero from "@/components/home/hero";
+import FeaturedSection from "@/components/home/featured-section";
+import CategoriesSection from "@/components/home/categories-section";
+import { WhyChoose, HowItWorks, CtaBand } from "@/components/home/info-sections";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
+
   return (
-    <section className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-5 py-28 text-center">
-      <span className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-        <Pizza className="size-7" />
-      </span>
-      <h1 className="font-heading text-5xl font-semibold tracking-tight">
-        Hot &amp; Fresh Pizza Delivered to Your Door
-      </h1>
-      <p className="max-w-xl text-lg text-muted-foreground">
-        The full home page is coming in a later phase.
-      </p>
-      <Link href="/menu" className={buttonVariants({ size: "lg" })}>
-        Explore Pizza Menu
-      </Link>
-    </section>
+    <>
+      <Hero />
+      <FeaturedSection />
+      <CategoriesSection />
+      <WhyChoose />
+      <HowItWorks />
+      <CtaBand loggedIn={!!session} />
+    </>
   );
 }
