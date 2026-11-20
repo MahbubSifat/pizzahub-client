@@ -1,7 +1,5 @@
-import { getSession } from "@/lib/session";
-import DashboardPlaceholder from "@/components/dashboard/dashboard-placeholder";
+import { redirect } from "next/navigation";
 
-export default async function VendorDashboardPage() {
-  const session = await getSession();
-  return <DashboardPlaceholder title="Vendor Dashboard" name={session?.user.name ?? ""} />;
+export default function VendorHome() {
+  redirect("/dashboard/vendor/overview");
 }

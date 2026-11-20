@@ -1,7 +1,11 @@
-import { getSession } from "@/lib/session";
-import DashboardPlaceholder from "@/components/dashboard/dashboard-placeholder";
+import PageHeader from "@/components/dashboard/page-header";
+import OverviewPanel from "@/components/dashboard/overview-panel";
 
-export default async function AdminDashboardPage() {
-  const session = await getSession();
-  return <DashboardPlaceholder title="Admin Dashboard" name={session?.user.name ?? ""} />;
+export default function AdminOverviewPage() {
+  return (
+    <>
+      <PageHeader title="Admin Overview" subtitle="Platform-wide numbers at a glance." />
+      <OverviewPanel role="admin" />
+    </>
+  );
 }
