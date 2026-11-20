@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2, ShoppingBag, Store } from "lucide-react";
+import { Camera, Check, Loader2, ShoppingBag, Store, X } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -28,17 +28,44 @@ const roles = [
   },
 ];
 
+const MAX_PHOTO = 2 * 1024 * 1024;
+const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export default function SignUpForm() {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [role, setRole] = useState<Role>("customer");
   const [password, setPassword] = useState("");
+  const [photo, setPhoto] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const preview = useMemo(() => (photo ? URL.createObjectURL(photo) : null), [photo]);
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const rules = [
     { label: "At least 6 characters", ok: password.length >= 6 },
     { label: "One uppercase letter", ok: /[A-Z]/.test(password) },
     { label: "One lowercase letter", ok: /[a-z]/.test(password) },
   ];
+
+  function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!PHOTO_TYPES.includes(file.type)) {
+      toast.error("Only JPG, PNG or WebP images are allowed");
+      return;
+    }
+    if (file.size > MAX_PHOTO) {
+      toast.error("Photo must be 2MB or smaller");
+      return;
+    }
+    setPhoto(file);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,12 +95,29 @@ export default function SignUpForm() {
       role,
       businessName: role === "vendor" ? businessName : undefined,
     });
-    setLoading(false);
 
     if (error) {
+      setLoading(false);
       toast.error(error.message ?? "Sign up failed");
       return;
     }
+
+    // ছবি ঐচ্ছিক: account তৈরির পর (login অবস্থায়) upload করে profile-এ বসানো হয়
+    if (photo) {
+      try {
+        const body = new FormData();
+        body.append("file", photo);
+        const response = await fetch("/api/upload/avatar", { method: "POST", body });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.url) throw new Error(data.message || "Upload failed");
+        const { error: updateError } = await authClient.updateUser({ image: data.url });
+        if (updateError) throw new Error(updateError.message);
+      } catch {
+        toast.warning("Account created, but the photo could not be saved. Add it in Profile Settings.");
+      }
+    }
+
+    setLoading(false);
     toast.success("Account created. Welcome to PizzaHub!");
     router.push("/dashboard");
     router.refresh();
@@ -117,6 +161,44 @@ export default function SignUpForm() {
             );
           })}
         </div>
+      </div>
+
+      <div className="flex items-center gap-4 rounded-2xl border bg-card p-3">
+        {preview ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={preview} alt="Selected profile photo" className="size-14 shrink-0 rounded-full object-cover" />
+        ) : (
+          <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+            <Camera className="size-5" />
+          </span>
+        )}
+        <div className="flex-1">
+          <p className="text-sm font-medium">Profile photo (optional)</p>
+          <p className="text-xs text-muted-foreground">JPG, PNG or WebP, up to 2MB</p>
+        </div>
+        <div className="flex gap-1">
+          <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+            {photo ? "Change" : "Add"}
+          </Button>
+          {photo && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Remove photo"
+              onClick={() => setPhoto(null)}
+            >
+              <X className="size-4" />
+            </Button>
+          )}
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={handlePhoto}
+        />
       </div>
 
       <div className="space-y-2">
