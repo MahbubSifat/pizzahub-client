@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/logo";
 import UserMenu from "@/components/user-menu";
+import ThemeToggle from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
@@ -70,6 +71,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <div className="hidden items-center gap-2 md:flex">
+            <ThemeToggle />
             {isPending ? (
               <div className="h-9 w-28 animate-pulse rounded-full bg-secondary" />
             ) : user ? (
@@ -88,6 +90,7 @@ export default function Navbar() {
 
           {/* Mobile */}
           <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
             {!isPending && user && (
               <UserMenu name={user.name} email={user.email} image={user.image} role={role} />
             )}
