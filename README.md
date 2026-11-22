@@ -6,10 +6,10 @@ This repository is the **client** (Next.js). The API lives in the server reposit
 
 ## Links
 
-- **Live site:** <CLIENT_LIVE_URL>
-- **Client repository:** <CLIENT_GITHUB_URL>
-- **Server repository:** <SERVER_GITHUB_URL>
-- **Live API:** <SERVER_LIVE_URL>
+- **Live site:** https://pizzahub-client-jet.vercel.app
+- **Client repository:** https://github.com/MahbubSifat/pizzahub-client
+- **Server repository:** https://github.com/MahbubSifat/pizzahub-server
+- **Live API:** https://pizzahub-server-plum.vercel.app
 
 > Admin credentials and the Stripe test card are provided in the submission sheet.
 
@@ -101,7 +101,7 @@ ADMIN_PASSWORD=
 Prerequisites: Node.js 20+, a MongoDB Atlas database, Google OAuth credentials, an ImgBB API key. The server must be running (see the server README).
 
 ```bash
-git clone <CLIENT_GITHUB_URL>
+git clone https://github.com/MahbubSifat/pizzahub-client
 cd pizzahub-client
 npm install
 cp .env.example .env.local      # then fill in the values
