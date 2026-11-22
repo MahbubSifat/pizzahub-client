@@ -10,7 +10,7 @@ async function getFeatured(): Promise<PublicMenuItem[]> {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/menu-items?featured=true&limit=6`,
-      { cache: "no-store" }
+      { next: { revalidate: 30 } }
     );
     if (!response.ok) return [];
     const data = (await response.json()) as MenuListResponse;
