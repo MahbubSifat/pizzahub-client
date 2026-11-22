@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Logo from "@/components/logo";
+import CopyrightYear from "@/components/layout/copyright-year";
 
 function XIcon() {
   return (
@@ -106,7 +107,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t py-5 text-center text-sm text-muted-foreground">
-        &copy; {new Date().getFullYear()} PizzaHub. All rights reserved.
+        &copy; <CopyrightYear /> PizzaHub. All rights reserved.
       </div>
     </footer>
   );
