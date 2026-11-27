@@ -1,24 +1,31 @@
 import { MongoClient } from "mongodb";
+import { attachDatabasePool } from "@vercel/functions";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
-  throw new Error("MONGODB_URI is not set");
+  throw new Error("Missing environment variable: MONGODB_URI");
 }
 
-// Serverless-এ প্রতি অনুরোধে নতুন সংযোগ না বানিয়ে একই client ব্যবহার হয়
-const globalForMongo = globalThis as unknown as { _mongoClient?: MongoClient };
+const globalForMongo = globalThis as typeof globalThis & {
+  _mongoClient?: MongoClient;
+};
 
 const client =
   globalForMongo._mongoClient ??
   new MongoClient(uri, {
+    appName: "pizzahub",
     maxPoolSize: 5,
     minPoolSize: 0,
-    maxIdleTimeMS: 60000,
-    serverSelectionTimeoutMS: 8000, // ৩০ সেকেন্ড ঝুলে না থেকে দ্রুত ব্যর্থ বা আবার চেষ্টা
-    connectTimeoutMS: 8000,
-    socketTimeoutMS: 30000,
-    family: 4, // IPv4 বাধ্য করে, IPv6 সংক্রান্ত দেরি এড়াতে
+    maxIdleTimeMS: 5000, // function ঘুমানোর আগেই অলস সংযোগ বন্ধ হয়
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+    family: 4,
   });
+
+// Vercel-এ function freeze হওয়ার আগে সংযোগ গুছিয়ে নেয়
+if (process.env.VERCEL) {
+  attachDatabasePool(client);
+}
 
 globalForMongo._mongoClient = client;
 
